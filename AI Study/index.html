@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10172b">
+  <title>행운의 로또 번호 추천</title>
+  <style>
+    :root,
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --page-bg: #10172b;
+      --text-color: #f7f8fc;
+      --muted-color: #aab2c6;
+      --accent-color: #aab8ff;
+      --panel-bg: rgba(25, 34, 58, .88);
+      --panel-border: rgba(255, 255, 255, .1);
+      --control-bg: #222d4a;
+      --soft-border: rgba(255, 255, 255, .14);
+      --subtle-border: rgba(255, 255, 255, .18);
+      --game-bg: rgba(255, 255, 255, .045);
+      --game-border: rgba(255, 255, 255, .07);
+      --copy-bg: #293451;
+      --copy-color: #e6e9f2;
+      --message-color: #b8c5ff;
+      --notice-color: #818ba2;
+      --focus-color: #aab8ff;
+      --panel-shadow: rgba(0, 0, 0, .34);
+      --glow-left: rgba(80, 107, 230, .24);
+      --glow-right: rgba(139, 76, 195, .2);
+      font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--page-bg);
+      color: var(--text-color);
+      font-synthesis: none;
+    }
+
+    :root[data-theme="light"] {
+      color-scheme: light;
+      --page-bg: #f1f5fb;
+      --text-color: #202a3d;
+      --muted-color: #596579;
+      --accent-color: #485bb8;
+      --panel-bg: rgba(255, 255, 255, .94);
+      --panel-border: rgba(23, 32, 51, .12);
+      --control-bg: #fff;
+      --soft-border: rgba(23, 32, 51, .18);
+      --subtle-border: rgba(23, 32, 51, .22);
+      --game-bg: rgba(34, 45, 74, .045);
+      --game-border: rgba(23, 32, 51, .08);
+      --copy-bg: #e8eef8;
+      --copy-color: #25314a;
+      --message-color: #4254a8;
+      --notice-color: #667085;
+      --focus-color: #5368c9;
+      --panel-shadow: rgba(31, 41, 55, .14);
+      --glow-left: rgba(80, 107, 230, .12);
+      --glow-right: rgba(139, 76, 195, .1);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      padding: 48px 20px;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(ellipse at 15% 10%, var(--glow-left), transparent 42%),
+        radial-gradient(ellipse at 90% 90%, var(--glow-right), transparent 38%),
+        var(--page-bg);
+      color: var(--text-color);
+    }
+
+    button, select { font: inherit; }
+
+    .app {
+      width: min(100%, 720px);
+      padding: clamp(24px, 5vw, 48px);
+      border: 1px solid var(--panel-border);
+      border-radius: 28px;
+      background: var(--panel-bg);
+      box-shadow: 0 28px 80px var(--panel-shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--accent-color);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 6vw, 40px);
+      letter-spacing: -.05em;
+    }
+
+    .subtitle {
+      margin: 12px 0 30px;
+      color: var(--muted-color);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    .controls {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .game-count-label {
+      display: grid;
+      gap: 8px;
+      color: var(--muted-color);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    select {
+      min-width: 132px;
+      padding: 11px 36px 11px 14px;
+      border: 1px solid var(--soft-border);
+      border-radius: 12px;
+      outline: none;
+      color: var(--text-color);
+      background: var(--control-bg);
+      cursor: pointer;
+    }
+
+    select:focus-visible, button:focus-visible {
+      outline: 3px solid var(--focus-color);
+      outline-offset: 3px;
+    }
+
+    .results {
+      display: grid;
+      gap: 10px;
+    }
+
+    .empty-state {
+      padding: 34px 18px;
+      border: 1px dashed var(--subtle-border);
+      border-radius: 18px;
+      color: var(--muted-color);
+      text-align: center;
+      line-height: 1.7;
+    }
+
+    .game {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-height: 72px;
+      padding: 14px 16px;
+      border: 1px solid var(--game-border);
+      border-radius: 16px;
+      background: var(--game-bg);
+      animation: rise-in .35s both;
+    }
+
+    .game-title {
+      flex: 0 0 48px;
+      color: var(--accent-color);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .numbers {
+      display: flex;
+      flex: 1;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .ball {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      flex: 0 0 42px;
+      place-items: center;
+      border-radius: 50%;
+      color: #172033;
+      font-size: 15px;
+      font-weight: 850;
+      box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .12), 0 5px 12px rgba(0, 0, 0, .15);
+    }
+
+    .yellow { background: #ffd45b; }
+    .blue { background: #74c8f5; }
+    .red { background: #ff827f; }
+    .gray { background: #c4cbd7; }
+    .green { background: #a9db70; }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .button {
+      min-height: 48px;
+      padding: 0 20px;
+      border: 0;
+      border-radius: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform .18s ease, filter .18s ease, background .18s ease;
+    }
+
+    .button:hover { transform: translateY(-2px); filter: brightness(1.06); }
+    .button:active { transform: translateY(0); }
+
+    .recommend-btn {
+      flex: 1 1 220px;
+      color: #20243a;
+      background: linear-gradient(135deg, #ffe27a, #ffc94d);
+      box-shadow: 0 8px 22px rgba(255, 201, 77, .16);
+    }
+
+    .copy-btn {
+      flex: 0 1 190px;
+      color: var(--copy-color);
+      border: 1px solid var(--soft-border);
+      background: var(--copy-bg);
+    }
+
+    .theme-toggle {
+      flex: 0 0 auto;
+      color: var(--copy-color);
+      border: 1px solid var(--soft-border);
+      background: var(--copy-bg);
+    }
+
+    .message {
+      min-height: 22px;
+      margin: 15px 0 0;
+      color: var(--message-color);
+      font-size: 13px;
+    }
+
+    .notice {
+      margin: 22px 0 0;
+      padding-top: 17px;
+      border-top: 1px solid var(--panel-border);
+      color: var(--notice-color);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    @keyframes rise-in {
+      from { transform: translateY(8px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @media (max-width: 520px) {
+      body { padding: 20px 12px; }
+      .app { padding: 25px 17px; border-radius: 22px; }
+      .controls { align-items: center; }
+      .game { gap: 8px; padding: 12px 9px; }
+      .game-title { flex-basis: 42px; font-size: 12px; }
+      .numbers { gap: 5px; }
+      .ball { width: clamp(30px, 8vw, 38px); height: clamp(30px, 8vw, 38px); flex-basis: clamp(30px, 8vw, 38px); font-size: 13px; }
+      .copy-btn { flex: 1 1 150px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <p class="eyebrow">LUCKY NUMBER GENERATOR</p>
+    <h1>🍀 행운의 로또 번호</h1>
+    <p class="subtitle">원하는 게임 수를 선택하고 버튼을 눌러<br>1부터 45까지의 번호를 무작위로 추천받아 보세요.</p>
+
+    <div class="controls">
+      <label class="game-count-label" for="gameCount">
+        추천 게임 수
+        <select id="gameCount">
+          <option value="1">1게임</option>
+          <option value="3">3게임</option>
+          <option value="5" selected>5게임</option>
+          <option value="10">10게임</option>
+        </select>
+      </label>
+      <button class="button theme-toggle" id="themeToggle" type="button" aria-label="테마 전환" aria-pressed="false">🌙 어두운 모드</button>
+    </div>
+
+    <section id="lottoResults" class="results" aria-label="추천 로또 번호" aria-live="polite">
+      <div class="empty-state">아직 추천된 번호가 없어요.<br>아래 버튼을 눌러 행운의 번호를 만들어 보세요!</div>
+    </section>
+
+    <div class="actions">
+      <button class="button recommend-btn" id="recommendButton" type="button">🎲 번호 자동 추천</button>
+      <button class="button copy-btn" id="copyButton" type="button">📋 전체 번호 복사</button>
+    </div>
+    <p class="message" id="message" role="status" aria-live="polite"></p>
+    <p class="notice">※ 번호는 매번 무작위로 생성되며, 당첨을 보장하지 않습니다. 무리한 구매는 삼가 주세요.</p>
+  </main>
+
+  <script>
+    let currentGames = [];
+
+    const root = document.documentElement;
+    const themeToggle = document.getElementById("themeToggle");
+    const themeColor = document.querySelector('meta[name="theme-color"]');
+
+    function setTheme(theme) {
+      const isLight = theme === "light";
+      root.dataset.theme = isLight ? "light" : "dark";
+      themeToggle.setAttribute("aria-pressed", String(isLight));
+      themeToggle.textContent = isLight ? "☀️ 밝은 모드" : "🌙 어두운 모드";
+      themeColor.setAttribute("content", isLight ? "#f1f5fb" : "#10172b");
+    }
+
+    themeToggle.addEventListener("click", () => {
+      setTheme(root.dataset.theme === "dark" ? "light" : "dark");
+    });
+
+    function getColor(number) {
+      if (number <= 10) return "yellow";
+      if (number <= 20) return "blue";
+      if (number <= 30) return "red";
+      if (number <= 40) return "gray";
+      return "green";
+    }
+
+    function generateNumbers() {
+      const pool = Array.from({ length: 45 }, (_, index) => index + 1);
+
+      for (let index = pool.length - 1; index > 0; index--) {
+        const randomIndex = Math.floor(Math.random() * (index + 1));
+        [pool[index], pool[randomIndex]] = [pool[randomIndex], pool[index]];
+      }
+
+      return pool.slice(0, 6).sort((a, b) => a - b);
+    }
+
+    function recommendLotto() {
+      const gameCount = Number(document.getElementById("gameCount").value);
+      const results = document.getElementById("lottoResults");
+      const message = document.getElementById("message");
+
+      currentGames = Array.from({ length: gameCount }, generateNumbers);
+      results.replaceChildren();
+
+      currentGames.forEach((numbers, index) => {
+        const game = document.createElement("div");
+        game.className = "game";
+        game.style.animationDelay = `${index * 0.06}s`;
+
+        const title = document.createElement("div");
+        title.className = "game-title";
+        title.textContent = `${index + 1}게임`;
+
+        const numberContainer = document.createElement("div");
+        numberContainer.className = "numbers";
+        numberContainer.setAttribute("aria-label", numbers.join(", "));
+
+        numbers.forEach((number) => {
+          const ball = document.createElement("span");
+          ball.className = `ball ${getColor(number)}`;
+          ball.textContent = number;
+          numberContainer.appendChild(ball);
+        });
+
+        game.append(title, numberContainer);
+        results.appendChild(game);
+      });
+
+      message.textContent = `🎉 ${gameCount}게임의 번호를 추천했어요!`;
+    }
+
+    async function copyNumbers() {
+      const message = document.getElementById("message");
+      if (currentGames.length === 0) {
+        message.textContent = "먼저 번호 자동 추천 버튼을 눌러 주세요.";
+        return;
+      }
+
+      const text = currentGames.map((game, index) =>
+        `${index + 1}게임: ${game.join(", ")}`
+      ).join("\n");
+
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const textarea = document.createElement("textarea");
+          textarea.value = text;
+          textarea.setAttribute("readonly", "");
+          textarea.style.position = "fixed";
+          textarea.style.opacity = "0";
+          document.body.appendChild(textarea);
+          textarea.select();
+          const copied = document.execCommand("copy");
+          textarea.remove();
+          if (!copied) throw new Error("복사 명령을 사용할 수 없습니다.");
+        }
+        message.textContent = `✅ ${currentGames.length}게임 번호를 복사했어요!`;
+      } catch (error) {
+        message.textContent = "복사하지 못했어요. 브라우저 권한을 확인해 주세요.";
+      }
+    }
+
+    document.getElementById("recommendButton").addEventListener("click", recommendLotto);
+    document.getElementById("copyButton").addEventListener("click", copyNumbers);
+  </script>
+</body>
+</html>
