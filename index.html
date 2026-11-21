@@ -1,17 +1,60 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#10172b">
   <title>행운의 로또 번호 추천</title>
   <style>
-    :root {
+    :root,
+    :root[data-theme="dark"] {
       color-scheme: dark;
+      --page-bg: #10172b;
+      --text-color: #f7f8fc;
+      --muted-color: #aab2c6;
+      --accent-color: #aab8ff;
+      --panel-bg: rgba(25, 34, 58, .88);
+      --panel-border: rgba(255, 255, 255, .1);
+      --control-bg: #222d4a;
+      --soft-border: rgba(255, 255, 255, .14);
+      --subtle-border: rgba(255, 255, 255, .18);
+      --game-bg: rgba(255, 255, 255, .045);
+      --game-border: rgba(255, 255, 255, .07);
+      --copy-bg: #293451;
+      --copy-color: #e6e9f2;
+      --message-color: #b8c5ff;
+      --notice-color: #818ba2;
+      --focus-color: #aab8ff;
+      --panel-shadow: rgba(0, 0, 0, .34);
+      --glow-left: rgba(80, 107, 230, .24);
+      --glow-right: rgba(139, 76, 195, .2);
       font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #10172b;
-      color: #f7f8fc;
+      background: var(--page-bg);
+      color: var(--text-color);
       font-synthesis: none;
+    }
+
+    :root[data-theme="light"] {
+      color-scheme: light;
+      --page-bg: #f1f5fb;
+      --text-color: #202a3d;
+      --muted-color: #596579;
+      --accent-color: #485bb8;
+      --panel-bg: rgba(255, 255, 255, .94);
+      --panel-border: rgba(23, 32, 51, .12);
+      --control-bg: #fff;
+      --soft-border: rgba(23, 32, 51, .18);
+      --subtle-border: rgba(23, 32, 51, .22);
+      --game-bg: rgba(34, 45, 74, .045);
+      --game-border: rgba(23, 32, 51, .08);
+      --copy-bg: #e8eef8;
+      --copy-color: #25314a;
+      --message-color: #4254a8;
+      --notice-color: #667085;
+      --focus-color: #5368c9;
+      --panel-shadow: rgba(31, 41, 55, .14);
+      --glow-left: rgba(80, 107, 230, .12);
+      --glow-right: rgba(139, 76, 195, .1);
     }
 
     * { box-sizing: border-box; }
@@ -24,9 +67,10 @@
       display: grid;
       place-items: center;
       background:
-        radial-gradient(ellipse at 15% 10%, rgba(80, 107, 230, .24), transparent 42%),
-        radial-gradient(ellipse at 90% 90%, rgba(139, 76, 195, .2), transparent 38%),
-        #10172b;
+        radial-gradient(ellipse at 15% 10%, var(--glow-left), transparent 42%),
+        radial-gradient(ellipse at 90% 90%, var(--glow-right), transparent 38%),
+        var(--page-bg);
+      color: var(--text-color);
     }
 
     button, select { font: inherit; }
@@ -34,16 +78,16 @@
     .app {
       width: min(100%, 720px);
       padding: clamp(24px, 5vw, 48px);
-      border: 1px solid rgba(255, 255, 255, .1);
+      border: 1px solid var(--panel-border);
       border-radius: 28px;
-      background: rgba(25, 34, 58, .88);
-      box-shadow: 0 28px 80px rgba(0, 0, 0, .34);
+      background: var(--panel-bg);
+      box-shadow: 0 28px 80px var(--panel-shadow);
       backdrop-filter: blur(16px);
     }
 
     .eyebrow {
       margin: 0 0 12px;
-      color: #aab8ff;
+      color: var(--accent-color);
       font-size: 12px;
       font-weight: 800;
       letter-spacing: .16em;
@@ -58,7 +102,7 @@
 
     .subtitle {
       margin: 12px 0 30px;
-      color: #aab2c6;
+      color: var(--muted-color);
       font-size: 15px;
       line-height: 1.65;
     }
@@ -74,7 +118,7 @@
     .game-count-label {
       display: grid;
       gap: 8px;
-      color: #c4cada;
+      color: var(--muted-color);
       font-size: 13px;
       font-weight: 700;
     }
@@ -82,16 +126,16 @@
     select {
       min-width: 132px;
       padding: 11px 36px 11px 14px;
-      border: 1px solid rgba(255, 255, 255, .14);
+      border: 1px solid var(--soft-border);
       border-radius: 12px;
       outline: none;
-      color: #f7f8fc;
-      background: #222d4a;
+      color: var(--text-color);
+      background: var(--control-bg);
       cursor: pointer;
     }
 
     select:focus-visible, button:focus-visible {
-      outline: 3px solid #aab8ff;
+      outline: 3px solid var(--focus-color);
       outline-offset: 3px;
     }
 
@@ -102,9 +146,9 @@
 
     .empty-state {
       padding: 34px 18px;
-      border: 1px dashed rgba(255, 255, 255, .18);
+      border: 1px dashed var(--subtle-border);
       border-radius: 18px;
-      color: #aab2c6;
+      color: var(--muted-color);
       text-align: center;
       line-height: 1.7;
     }
@@ -115,15 +159,15 @@
       gap: 14px;
       min-height: 72px;
       padding: 14px 16px;
-      border: 1px solid rgba(255, 255, 255, .07);
+      border: 1px solid var(--game-border);
       border-radius: 16px;
-      background: rgba(255, 255, 255, .045);
+      background: var(--game-bg);
       animation: rise-in .35s both;
     }
 
     .game-title {
       flex: 0 0 48px;
-      color: #aab8ff;
+      color: var(--accent-color);
       font-size: 13px;
       font-weight: 800;
     }
@@ -183,23 +227,30 @@
 
     .copy-btn {
       flex: 0 1 190px;
-      color: #e6e9f2;
-      border: 1px solid rgba(255, 255, 255, .13);
-      background: #293451;
+      color: var(--copy-color);
+      border: 1px solid var(--soft-border);
+      background: var(--copy-bg);
+    }
+
+    .theme-toggle {
+      flex: 0 0 auto;
+      color: var(--copy-color);
+      border: 1px solid var(--soft-border);
+      background: var(--copy-bg);
     }
 
     .message {
       min-height: 22px;
       margin: 15px 0 0;
-      color: #b8c5ff;
+      color: var(--message-color);
       font-size: 13px;
     }
 
     .notice {
       margin: 22px 0 0;
       padding-top: 17px;
-      border-top: 1px solid rgba(255, 255, 255, .09);
-      color: #818ba2;
+      border-top: 1px solid var(--panel-border);
+      color: var(--notice-color);
       font-size: 12px;
       line-height: 1.6;
     }
@@ -241,6 +292,7 @@
           <option value="10">10게임</option>
         </select>
       </label>
+      <button class="button theme-toggle" id="themeToggle" type="button" aria-label="테마 전환" aria-pressed="false">🌙 어두운 모드</button>
     </div>
 
     <section id="lottoResults" class="results" aria-label="추천 로또 번호" aria-live="polite">
@@ -257,6 +309,22 @@
 
   <script>
     let currentGames = [];
+
+    const root = document.documentElement;
+    const themeToggle = document.getElementById("themeToggle");
+    const themeColor = document.querySelector('meta[name="theme-color"]');
+
+    function setTheme(theme) {
+      const isLight = theme === "light";
+      root.dataset.theme = isLight ? "light" : "dark";
+      themeToggle.setAttribute("aria-pressed", String(isLight));
+      themeToggle.textContent = isLight ? "☀️ 밝은 모드" : "🌙 어두운 모드";
+      themeColor.setAttribute("content", isLight ? "#f1f5fb" : "#10172b");
+    }
+
+    themeToggle.addEventListener("click", () => {
+      setTheme(root.dataset.theme === "dark" ? "light" : "dark");
+    });
 
     function getColor(number) {
       if (number <= 10) return "yellow";
